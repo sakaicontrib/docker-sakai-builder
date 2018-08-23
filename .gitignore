@@ -1,0 +1,9 @@
+sakai
+work/tomcat/deploy/components
+work/tomcat/deploy/endorsed
+work/tomcat/deploy/lib
+work/tomcat/deploy/work
+work/tomcat/deploy/webapps
+work/Catalina
+work/mysql/data
+work/tomcat/deploy/logs/
