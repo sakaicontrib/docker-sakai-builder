@@ -57,6 +57,8 @@ docker run -d --name=sakai-mysql -p 53306:3306 \
 # Remove it if you already made one
 # docker stop sakai-tomcat; docker rm sakai-tomcat
 
+cp -r $WORK/tomcat/catalina_base/* $WORK/tomcat/deploy
+
 docker run -d --name=sakai-tomcat -p 8080:8080 \
     -e "CATALINA_BASE=/usr/src/app/deploy" \
     -v "${WORK}/tomcat/sakaihome:/usr/src/app/sakaihome" \
