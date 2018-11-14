@@ -6,7 +6,7 @@ JAVA_OPTS=“$JAVA_OPTS -Dhttp.agent=Sakai”
 
 JAVA_OPTS=“$JAVA_OPTS -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false”
 
-JAVA_OPTS=“$JAVA_OPTS -Dsakai.security=$CATALINA_HOME/sakai/”
+JAVA_OPTS=“$JAVA_OPTS -Dsakai.home=/usr/src/app/sakaihome/”
 
 JAVA_OPTS=“$JAVA_OPTS -Duser.timezone=US/Eastern”
 
