@@ -2,7 +2,9 @@ Fast Sakai Build
 
 Tested on OSX
 
-TODO: Convert some of this to a docker-compose instead of straight docker commands
+TODO: 
+  Convert some of this to a docker-compose instead of straight docker commands
+  Put the git into the "build" container so that you can skip that step (Though useful to have)
 
 Pre-requisites
 --------------
