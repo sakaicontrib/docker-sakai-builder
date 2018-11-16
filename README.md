@@ -2,6 +2,8 @@ Fast Sakai Build
 
 Tested on OSX
 
+TODO: Convert some of this to a docker-compose instead of straight docker commands
+
 Pre-requisites
 --------------
 Computer with at least 8GB of Memory
@@ -57,12 +59,13 @@ docker run -d --name=sakai-mysql -p 53306:3306 \
 # Remove it if you already made one
 # docker stop sakai-tomcat; docker rm sakai-tomcat
 
-cp -r $WORK/tomcat/catalina_base/* $WORK/tomcat/deploy
-
-docker run --rm -d --name=sakai-tomcat -p 8080:8080 \
+docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat -p 8080:8080 \
     -e "CATALINA_BASE=/usr/src/app/deploy" \
-    -v "${WORK}/tomcat/sakaihome:/usr/src/app/sakaihome" \
     -v "${WORK}/tomcat/deploy:/usr/src/app/deploy" \
+    -v "${WORK}/tomcat/sakaihome:/usr/src/app/deploy/sakai" \
+    -v "${WORK}/tomcat/catalina_base/bin:/usr/src/app/deploy/bin" \
+    -v "${WORK}/tomcat/catalina_base/conf:/usr/src/app/deploy/conf" \
+    -v "${WORK}/tomcat/catalina_base/webapp/ROOT:/usr/src/app/deploy/webapp/ROOT" \
     --link sakai-mysql:mysql \
     tomcat:9.0.11-jre8-alpine
 
