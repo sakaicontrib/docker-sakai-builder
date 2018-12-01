@@ -39,6 +39,7 @@ docker run --rm -it --name sakai-build \
     -v "${WORK}/tomcat/deploy:/usr/src/deploy" \
     -v "${HOME}"/.m2:/root/.m2 \
     -v "${PWD}:/usr/src/app" \
+    -u `id -u` \
     -w /usr/src/app maven:3.5.4-jdk-8-slim \
     /bin/bash -c "apt-get update && apt-get -y install git --no-install-recommends && mvn -T 1C -B -P mysql install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true" 
 
@@ -53,6 +54,7 @@ docker run -d --name=sakai-mysql -p 53306:3306 \
     -e "MYSQL_ROOT_PASSWORD=sakairoot" \
     -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d" \
     -v "${WORK}/mysql/data:/var/lib/mysql" \
+    -u `id -u` \
     -d mysql:5.6
 ```
 # Now deploy it to the Tomcat image! https://askubuntu.com/a/604111/365150
@@ -67,6 +69,7 @@ docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat -p 8080:8080 \
     -v "${WORK}/tomcat/catalina_base/bin:/usr/src/app/deploy/bin" \
     -v "${WORK}/tomcat/catalina_base/conf:/usr/src/app/deploy/conf" \
     -v "${WORK}/tomcat/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
+    -u `id -u` \
     --link sakai-mysql:mysql \
     tomcat:9.0.11-jre8-alpine
 ```
