@@ -57,7 +57,7 @@ docker run -d --name=sakai-mysql -p 53306:3306 \
     -u `id -u` \
     -d mysql:5.6
 ```
-# Now deploy it to the Tomcat image! https://askubuntu.com/a/604111/365150
+# Now deploy it to the Tomcat image!
 
 Remove it if you already made one
 `docker stop sakai-tomcat; docker rm sakai-tomcat`
@@ -77,3 +77,6 @@ docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat -p 8080:8080 \
 `docker logs sakai-tomcat -f`
 * To write the logs to a file use
 `docker logs sakai-tomcat >& logs.txt
+
+# References
+* https://askubuntu.com/a/604111/365150
