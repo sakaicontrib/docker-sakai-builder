@@ -96,9 +96,11 @@ docker run -d --name=sakai-mysql -p 53306:3306 \
 Remove it if you already made one
 `docker stop sakai-tomcat; docker rm sakai-tomcat`
 ```
-docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat -p 8080:8080 \
+docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat \
+    -p 8080:8080 -p 8089:8089 -p 9080:9080 \
     -e "CATALINA_BASE=/usr/src/app/deploy" \
     -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=US/Eastern -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false" \
+    -e "JPDA_ADDRESS=9080" \
     -v "${DEPLOY}:/usr/src/app/deploy" \
     -v "${TOMCAT}/sakaihome:/usr/src/app/deploy/sakai" \
     -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin" \
@@ -106,12 +108,13 @@ docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat -p 8080:8080 \
     -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
     -u `id -u`:`id -g` \
     --link sakai-mysql:mysql \
-    tomcat:9.0-jre8-alpine
+    tomcat:9.0-jre8-alpine \
+    /usr/local/tomcat/bin/catalina.sh jpda run
 ```
 * To see the startup logs run 
 `docker logs sakai-tomcat -f`
 * To write the logs to a file use
-`docker logs sakai-tomcat >& logs.txt
+`docker logs sakai-tomcat >& logs.txt`
 
 # References
 * https://askubuntu.com/a/604111/365150
