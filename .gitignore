@@ -3,3 +3,6 @@ work/tomcat/deploy/
 work/Catalina
 work/mysql/data
 work/tomcat/deploy/logs/
+work/.config
+work/.m2
+*.swp
