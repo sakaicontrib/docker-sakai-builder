@@ -4,7 +4,8 @@ Tested on OSX and Linux
 
 TODO: 
   Convert some of this to a docker-compose instead of straight docker commands
-  Put the git into the "build" container so that you can skip that step (Though useful to have)
+  Simplify some of the paths to have a single virtual "HOME"
+
 
 # Pre-requisites
 --------------
@@ -41,24 +42,47 @@ Note alpine docker not compatible with frontend-maven-plugin
 https://github.com/eirslett/frontend-maven-plugin/issues/633
 
 This needs to install git because of gulp-bower in rubrics
-Maybe that will be fixed someday, doesn't seem worth it for a new image
+Maybe that will be fixed someday. However we have to build a new image in order to include this.
+
+This cannot be included in the same step because of the user/permission difference.
 ```
 \rm -rf "${WORK}/tomcat/deploy"; 
+cd mavenbuild
+docker build . -t sakai:build
+cd ../sakai
+```
+Now you can use this to build the actual code.
+
+```
+# If docker creates this directory it does it as the wrong user, so create it first
+# These are on the host so they can be re-used between builds
+mkdir -p "$DEPLOY"
+mkdir -p "$WORK/.m2"
+mkdir -p "$WORK/.npm"
+mkdir -p "$WORK/.config"
+mkdir -p "$WORK/.cache"
+
+# Now build the code
 docker run --rm -it --name sakai-build \
-    -e "MAVEN_OPTS= -XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
+    -e "MAVEN_OPTS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
+    -e "MAVEN_CONFIG=/tmp/.m2" \
     -v "${DEPLOY}:/usr/src/deploy" \
-    -v "${HOME}"/.m2:/root/.m2 \
+    -v "${WORK}/.m2:/tmp/.m2" \
+    -v "${WORK}/.npm:/.npm" \
+    -v "${WORK}/.config:/.config" \
+    -v "${WORK}/.cache:/.cache" \
     -v "${PWD}:/usr/src/app" \
     -u `id -u`:`id -g` \
-    -w /usr/src/app maven:3.5.4-jdk-8-slim \
-    /bin/bash -c "apt-get update && apt-get -y install git --no-install-recommends && mvn -T 1C -B -P mysql install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true" 
+    -w /usr/src/app sakai:build \
+    /bin/bash -c "mvn -T 1C -B -P mysql install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/" 
 
 cd ..
 ```
 
 # Start up MySQL on port 53306
 Remove it if you already made one
-`docker stop sakai-mysql; docker rm sakai-mysql`
+# docker stop sakai-mysql; docker rm sakai-mysql
+
 ```
 docker run -d --name=sakai-mysql -p 53306:3306 \
     -e "MYSQL_ROOT_PASSWORD=sakairoot" \
@@ -81,7 +105,7 @@ docker rm sakai-tomcat -f; docker run -d --name=sakai-tomcat -p 8080:8080 \
     -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
     -u `id -u`:`id -g` \
     --link sakai-mysql:mysql \
-    tomcat:9.0.11-jre8-alpine
+    tomcat:9.0-jre8-alpine
 ```
 * To see the startup logs run 
 `docker logs sakai-tomcat -f`
