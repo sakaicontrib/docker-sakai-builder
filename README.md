@@ -81,7 +81,7 @@ cd ..
 
 # Start up MySQL on port 53306
 Remove it if you already made one
-# docker stop sakai-mysql; docker rm sakai-mysql
+`# docker stop sakai-mysql; docker rm sakai-mysql`
 
 ```
 docker run -d --name=sakai-mysql -p 53306:3306 \
