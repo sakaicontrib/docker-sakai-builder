@@ -62,19 +62,14 @@ cd ..
 ```
 
 # Start up MySQL on port 53306
-Remove it if you already made one
-`# docker stop sakai-mysql; docker rm sakai-mysql`
-```
-docker run -d --name=sakai-mysql -p 53306:3306 \
-    -e "MYSQL_ROOT_PASSWORD=sakairoot" \
-    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d" \
-    -v "${WORK}/mysql/data:/var/lib/mysql" \
-    -u `id -u`:`id -g` \
-    -d mysql:5.6
-```
-# Now startup tomcat!
+Remove it if you already made one and want to clean it out!
+`# docker rm sakai-mysql`
+`./sakai-dock.sh mysql`
 
-`./tomcat-start.sh`
+# Now startup tomcat!
+Remove it if you already made one and want to clean it out!
+`# docker rm sakai-tomcat`
+`./sakai-dock.sh tomcat`
 
 * To see the startup logs run 
 `docker logs sakai-tomcat -f`
