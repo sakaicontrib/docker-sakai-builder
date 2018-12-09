@@ -33,6 +33,7 @@ start_tomcat() {
 }
 
 start_mysql() {
+	mkdir -p "${WORK}/mysql/data"
 	# Start it if we've already created it, unless we want to re-create
 	docker run -d --name=sakai-mysql -p 53306:3306 \
 	    -e "MYSQL_ROOT_PASSWORD=sakairoot" \
