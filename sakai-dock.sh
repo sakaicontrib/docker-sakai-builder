@@ -39,7 +39,7 @@ start_mysql() {
 	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d" \
 	    -v "${WORK}/mysql/data:/var/lib/mysql" \
 	    -u `id -u`:`id -g` \
-	    -d mysql:5.6 || docker-start sakai-mysql
+	    -d mysql:5.6 || docker start sakai-mysql
 }
 
 if [ "$1" = "tomcat" ]; then
