@@ -19,14 +19,10 @@ Git installed for your OS so that the "git" command works on the command line.
 To clean up everything done here run
 `Docker stop sakai-mysql; docker stop sakai-tomcat; docker rm sakai-mysql; docker rm sakai-tomcat; docker rm sakai-build; git clean -f -d`
 
-# Define these variables first
+# Define this variable first
 # The "work" directory
 ```
 WORK="${PWD}/work"
-# Where tomcat files will be
-TOMCAT="${WORK}/tomcat"
-# Where files will be deployed
-DEPLOY="${TOMCAT}/deploy"
 
 # First download Sakai with git, you may also want to clone your fork instead.
 git clone https://github.com/sakaiproject/sakai
@@ -55,7 +51,7 @@ Now you can use this to build the actual code.
 
 ```
 cd ../sakai
-# May need to run this to clean up the deploy
+# May need to run this to clean up the deploy, make sure WORK is defined. (TODO: Work this into the script)
 # \rm -rf "${WORK}/tomcat/deploy"; 
 ../maven-build.sh
 cd ..

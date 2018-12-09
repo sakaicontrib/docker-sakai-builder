@@ -14,14 +14,6 @@ DEPLOY="${TOMCAT}/deploy"
 
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY"
 
-if [ "$1" = "tomcat" ]; then
-	start_tomcat
-elif [ "$1" = "mysql" ]; then
-	start_mysql	
-else
-	echo "Must specify mysql or tomcat as arguments"
-	exit
-fi
 
 start_tomcat() {
 	docker run -d --name=sakai-tomcat \
@@ -49,3 +41,13 @@ start_mysql() {
 	    -u `id -u`:`id -g` \
 	    -d mysql:5.6 || docker-start sakai-mysql
 }
+
+if [ "$1" = "tomcat" ]; then
+	start_tomcat
+elif [ "$1" = "mysql" ]; then
+	start_mysql	
+else
+	echo "Must specify mysql or tomcat as arguments"
+	exit
+fi
+
