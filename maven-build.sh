@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-SCRIPT=$(readlink -f "$0")
-# Absolute path this script is in, thus /home/user/bin
-BASEDIR=$(dirname "$SCRIPT")
+cd $(dirname "${0}") > /dev/null
+BASEDIR=$(pwd -L)
+cd - > /dev/null
 
 WORK="${BASEDIR}/work"
 # Where tomcat files will be
