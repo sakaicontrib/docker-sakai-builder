@@ -10,17 +10,16 @@ TODO:
 
 # Pre-requisites
 --------------
-Computer with at least 8GB of Memory
-Docker installed for your OS
-  Configure to have at 3GB of Memory for Docker (4GB+ if you have 16GB)
-  https://stackoverflow.com/a/44533437/3708872
-Git installed for your OS so that the "git" command works on the command line.
+* Computer with at least 8GB of Memory
+* Docker installed for your OS
+  * Configure to have at 3GB of Memory for Docker (4GB+ if you have 16GB)
+  * https://stackoverflow.com/a/44533437/3708872
+* Git installed for your OS so that the "git" command works on the command line.
 
 To clean up everything done here run
 `Docker stop sakai-mysql; docker stop sakai-tomcat; docker rm sakai-mysql; docker rm sakai-tomcat; docker rm sakai-build; git clean -f -d`
 
-# Define this variable first
-# The "work" directory
+# Define this variable first for the "work" directory
 ```
 WORK="${PWD}/work"
 
@@ -29,8 +28,9 @@ git clone https://github.com/sakaiproject/sakai
 cd sakai
 ```
 
-# Note at this point you can checkout and build another branch. These notes will only currently work with 19.x+ because of the tomcat version.
-# TODO Support having multiple different branches
+*Note at this point you can checkout and build another branch. These notes will only currently work with 19.x+ because of the tomcat version.*
+
+*TODO Support having multiple different branches*
 
 # Now build it with maven in Docker! 
 (This caches the artifacts at ~/.m2 deploys to /tomcat/deploy)
