@@ -16,11 +16,13 @@ echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY"
 
 
 start_tomcat() {
+	docker stop sakai-tomcat
+	# May want to include an opt for docker rm sakai-tomcat
 	docker run -d --name=sakai-tomcat \
-	    -p 8080:8080 -p 8089:8089 -p 9080:9080 \
+	    -p 8080:8080 -p 8089:8089 -p 8000:8000 \
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=US/Eastern -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false" \
-	    -e "JPDA_ADDRESS=9080" \
+	    -e "JPDA_ADDRESS=8000" \
 	    -v "${DEPLOY}:/usr/src/app/deploy" \
 	    -v "${TOMCAT}/sakaihome:/usr/src/app/deploy/sakai" \
 	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin" \
@@ -34,6 +36,8 @@ start_tomcat() {
 
 start_mysql() {
 	mkdir -p "${WORK}/mysql/data"
+	docker stop sakai-mysql
+	# May want to include an opt for docker rm sakai-mysql
 	# Start it if we've already created it, unless we want to re-create
 	docker run -d --name=sakai-mysql -p 53306:3306 \
 	    -e "MYSQL_ROOT_PASSWORD=sakairoot" \
