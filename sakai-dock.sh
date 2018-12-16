@@ -16,8 +16,7 @@ echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY"
 
 
 start_tomcat() {
-	docker stop sakai-tomcat
-	# May want to include an opt for docker rm sakai-tomcat
+	docker stop sakai-tomcat && docker rm sakai-tomcat
 	docker run -d --name=sakai-tomcat \
 	    -p 8080:8080 -p 8089:8089 -p 8000:8000 \
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \

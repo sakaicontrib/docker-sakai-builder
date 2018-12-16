@@ -30,4 +30,4 @@ docker run --rm -it --name sakai-build \
     -v "${PWD}:/usr/src/app" \
     -u `id -u`:`id -g` \
     -w /usr/src/app sakai:build \
-    /bin/bash -c "mvn -T 1C -B -P mysql install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/" 
+    /bin/bash -c "mvn -T 1C -B -P mysql clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/" 
