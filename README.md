@@ -3,9 +3,10 @@ Fast Sakai Build
 Tested on OSX and Linux
 
 TODO: 
-  Convert some of this to a docker-compose instead of straight docker commands
-  Simplify some of the paths to have a single virtual "HOME"
+  Convert some of this to a docker-compose instead of straight docker commands?
+  Simplify some of the paths to have a single virtual "HOME" -- This is mostly done
   Continue cleanup to make these into shell scripts
+  Add "cleanup" command to shell scripts
 
 
 # Pre-requisites
@@ -59,7 +60,7 @@ cd ..
 
 # Start up MySQL on port 53306
 Remove it if you already made one and want to clean it out!
-`# docker rm sakai-mysql`
+`# \rm -rf ${WORK}/mysql/data`
 `./sakai-dock.sh mysql`
 
 # Now startup tomcat!
