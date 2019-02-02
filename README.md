@@ -5,9 +5,6 @@ Tested on OSX and Linux
 TODO: 
   Convert some of this to a docker-compose instead of straight docker commands?
   Simplify some of the paths to have a single virtual "HOME" -- This is mostly done
-  Continue cleanup to make these into shell scripts
-  Add "cleanup" command to shell scripts
-
 
 # Pre-requisites
 --------------
@@ -52,9 +49,9 @@ Now you can use this to build the actual code.
 
 ```
 cd ../sakai
-# May need to run this to clean up the deploy, make sure WORK is defined. (TODO: Work this into the script)
-# \rm -rf "${WORK}/tomcat/deploy"; 
-../maven-build.sh
+# May need to run this to clean up the deploy, run this if the case
+# ../sakai-dock.sh clean 
+../sakai-dock.sh build
 cd ..
 ```
 
