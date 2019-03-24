@@ -75,6 +75,10 @@ clean_deploy() {
 	rm -rf $DEPLOY
 }
 
+clean_mysql() {
+	rm -rf ${WORK}/mysql/data
+}
+
 set -x
 
 if [ "$1" = "tomcat" ]; then
@@ -83,10 +87,11 @@ elif [ "$1" = "mysql" ]; then
 	start_mysql	
 elif [ "$1" = "build" ]; then
 	build_sakai	
-elif [ "$1" = "clean" ]; then
+elif [ "$1" = "clean_deploy" ]; then
 	clean_deploy	
+elif [ "$1" = "clean_mysql" ]; then
+	clean_mysql
 else
-	echo "Must specify mysql, tomcat, build or clean as arguments"
+	echo "Must specify mysql, tomcat, build, clean_deploy or clean_mysql as arguments"
 	exit
 fi
-
