@@ -67,7 +67,7 @@ build_sakai() {
 	    -v "${WORK}/.cache:/.cache" \
 	    -v "${PWD}:/usr/src/app" \
 	    -u `id -u`:`id -g` \
-	    -w /usr/src/app sakai:build \
+	    -w /usr/src/app maven:3.6.1-jdk-8-slim \
 	    /bin/bash -c "mvn -T 1C -B -P mysql clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
 }
 
