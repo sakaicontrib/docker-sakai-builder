@@ -10,7 +10,7 @@ TODO:
 --------------
 * Computer with at around 8GB of Memory
 * Docker installed for your OS
-  * Go into the [Settings->Advanced](https://stackoverflow.com/a/44533437/3708872) of the Docker icon and configure to have at 3GB of Memory for Docker (4GB+ if you have 16GB)
+  * Go into the [Settings->Advanced](https://stackoverflow.com/a/44533437/3708872) of the Docker icon and configure to have at 3GB of Memory for Docker (4GB+ if you have 16GB). You can also increase the CPU's if you want to have faster builds.
   * [This blog has some good tips](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly) for setting it up in Windows.
   * If using WSL make sure to put your files on the /mnt/c (or /c) drive somewhere or else (Windows) Docker won't be able to use them.
 * Git installed for your OS so that the "git" command works on the command line.
@@ -37,8 +37,9 @@ cd ..
 ```
 
 # Start up MySQL on port 53306
-Remove it if you already made one and want to clean it out!
+Remove it if you already made one and want to clean it out! (Optional)
 `# \rm -rf ${WORK}/mysql/data`
+Start up MySQL!
 `./sakai-dock.sh mysql`
 
 # Now startup tomcat!
