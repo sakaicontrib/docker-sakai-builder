@@ -2,6 +2,17 @@
 # Script to build, deploy and run Sakai in docker containers
 # TODO Provide option for cleaning up these instances
 
+# Set up some options, TODO make these configurable
+
+# Number of threads, might need to change this for debuggging
+THREADS=C1
+
+#Set this to run the deploy command, remove otherwise
+SAKAI_DEPLOY="sakai:deploy"
+
+#Set this to skip tests
+MAVEN_TEST_SKIP=true
+
 cd $(dirname "${0}") > /dev/null
 BASEDIR=$(pwd -L)
 cd - > /dev/null
@@ -68,7 +79,7 @@ build_sakai() {
 	    -v "${PWD}:/usr/src/app" \
 	    -u `id -u`:`id -g` \
 	    -w /usr/src/app maven:3.6.1-jdk-8-slim \
-	    /bin/bash -c "mvn -T 1C -B -P mysql clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
+	    /bin/bash -c "mvn -T ${THREADS} -B -P mysql clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
 }
 
 clean_deploy() {

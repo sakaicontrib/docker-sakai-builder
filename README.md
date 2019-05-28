@@ -4,7 +4,8 @@ Tested on OSX, Linux(Ubuntu) and Windows Subsystem for Linux (Ubuntu+Windows Ent
 
 TODO: 
 * Convert some of this to a docker-compose instead of straight docker commands?
-* TODO Support having multiple different branches*
+* Support having multiple different branches
+* Make build_sakai more configurable, like number of threads whether or not to run sakai:deploy, skip tests, debugging etc
 
 # Pre-requisites
 --------------
