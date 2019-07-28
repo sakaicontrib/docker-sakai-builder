@@ -4,6 +4,10 @@
 
 # Set up some options, TODO make these configurable
 
+# Whether or not to set wicket debug mode on
+# This should either be development or deployment
+WICKET_CONFIG="development"
+
 # Number of threads, might need to change this for debuggging
 THREADS=C1
 
@@ -23,8 +27,7 @@ TOMCAT="${WORK}/tomcat"
 # Where files will be deployed
 DEPLOY="${TOMCAT}/deploy"
 
-echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY"
-
+echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
 start_tomcat() {
 	docker stop sakai-tomcat && docker rm sakai-tomcat
@@ -32,7 +35,7 @@ start_tomcat() {
 	    -p 8080:8080 -p 8089:8089 -p 8000:8000 \
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "CATALINA_TMPDIR=/tmp" \
-	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=US/Eastern -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false" \
+	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=US/Eastern -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG}" \
 	    -e "JPDA_ADDRESS=8000" \
 	    -v "${DEPLOY}:/usr/src/app/deploy" \
 	    -v "${TOMCAT}/sakaihome:/usr/src/app/deploy/sakai" \
@@ -41,7 +44,7 @@ start_tomcat() {
 	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
 	    -u `id -u`:`id -g` \
 	    --link sakai-mysql:mysql \
-	    tomcat:9.0-jre8-alpine \
+	    tomcat:9-jdk8 \
 	    /usr/local/tomcat/bin/catalina.sh jpda run || docker start sakai-tomcat
 }
 
