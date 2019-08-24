@@ -93,6 +93,11 @@ clean_mysql() {
 	rm -rf ${WORK}/mysql/data
 }
 
+kill_all() {
+	docker kill sakai-tomcat sakai-mysql
+	docker rm sakai-tomcat sakai-mysql
+}
+
 set -x
 
 if [ "$1" = "tomcat" ]; then
@@ -105,7 +110,9 @@ elif [ "$1" = "clean_deploy" ]; then
 	clean_deploy	
 elif [ "$1" = "clean_mysql" ]; then
 	clean_mysql
+elif [ "$1" = "kill" ]; then
+	kill_all
 else
-	echo "Must specify mysql, tomcat, build, clean_deploy or clean_mysql as arguments"
+	echo "Must specify mysql, tomcat, build, kill clean_deploy or clean_mysql as arguments"
 	exit
 fi
