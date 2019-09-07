@@ -11,8 +11,6 @@ WICKET_CONFIG="development"
 # Number of threads, might need to change this for debuggging
 THREADS=C1
 
-#Set this to run the deploy command, remove otherwise
-SAKAI_DEPLOY="sakai:deploy"
 
 #Set this to skip tests
 MAVEN_TEST_SKIP=true
@@ -61,7 +59,7 @@ start_mysql() {
 	    -d mysql:5.6 || docker start sakai-mysql
 }
 
-build_sakai() {
+maven_build() {
 	# If docker creates this directory it does it as the wrong user, so create it first
 	# These are on the host so they can be re-used between builds
 	mkdir -p "$DEPLOY"
@@ -98,14 +96,21 @@ kill_all() {
 	docker rm sakai-tomcat sakai-mysql
 }
 
-set -x
+# Turn off command echo
+set +x
 
 if [ "$1" = "tomcat" ]; then
 	start_tomcat
 elif [ "$1" = "mysql" ]; then
 	start_mysql	
 elif [ "$1" = "build" ]; then
-	build_sakai	
+	#Set this to run the deploy command, remove otherwise
+	SAKAI_DEPLOY="sakai:deploy"
+	maven_build	
+elif [ "$1" = "build_no_deploy" ]; then
+	#Set this to run the deploy command, remove otherwise
+	SAKAI_DEPLOY=""
+	maven_build	
 elif [ "$1" = "clean_deploy" ]; then
 	clean_deploy	
 elif [ "$1" = "clean_mysql" ]; then
@@ -113,6 +118,14 @@ elif [ "$1" = "clean_mysql" ]; then
 elif [ "$1" = "kill" ]; then
 	kill_all
 else
-	echo "Must specify mysql, tomcat, build, kill clean_deploy or clean_mysql as arguments"
+	echo "
+	Must specify one of:
+	mysql (Starts MySQL)
+	tomcat (Starts tomcat)
+	build (Build and deploy sakai tool to tomcat)
+	build_no_deploy (build without deploying) 
+	kill (Stop all instances) 
+	clean_deploy (Clean the deploy directory)
+	clean_mysql (Clean the mysql directory"
 	exit
 fi
