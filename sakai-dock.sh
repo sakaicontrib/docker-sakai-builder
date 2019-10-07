@@ -11,10 +11,6 @@ WICKET_CONFIG="development"
 # Number of threads, might need to change this for debuggging
 THREADS=C1
 
-
-#Set this to skip tests
-MAVEN_TEST_SKIP=true
-
 cd $(dirname "${0}") > /dev/null
 BASEDIR=$(pwd -L)
 cd - > /dev/null
@@ -99,17 +95,25 @@ kill_all() {
 # Turn off command echo
 set +x
 
+# Defaults
+SAKAI_DEPLOY="sakai:deploy"
+MAVEN_TEST_SKIP=true
+
+while getopts "sd" option; do
+    case "${option}" in
+    s) MAVEN_TEST_SKIP=false;;
+    d) SAKAI_DEPLOY="";;
+    *) echo "Incorrect options provided"; exit 1;;
+    esac
+done
+
+#TODO Add some of these options (deploy, test skip, etc) as options
 if [ "$1" = "tomcat" ]; then
 	start_tomcat
 elif [ "$1" = "mysql" ]; then
 	start_mysql	
 elif [ "$1" = "build" ]; then
-	#Set this to run the deploy command, remove otherwise
 	SAKAI_DEPLOY="sakai:deploy"
-	maven_build	
-elif [ "$1" = "build_no_deploy" ]; then
-	#Set this to run the deploy command, remove otherwise
-	SAKAI_DEPLOY=""
 	maven_build	
 elif [ "$1" = "clean_deploy" ]; then
 	clean_deploy	
@@ -123,7 +127,9 @@ else
 	mysql (Starts MySQL)
 	tomcat (Starts tomcat)
 	build (Build and deploy sakai tool to tomcat)
-	build_no_deploy (build without deploying) 
+		Add options: 
+		-s (Don't skip tests)
+		-d (Don't deploy to tomcat)
 	kill (Stop all instances) 
 	clean_deploy (Clean the deploy directory)
 	clean_mysql (Clean the mysql directory"
