@@ -99,39 +99,42 @@ set +x
 SAKAI_DEPLOY="sakai:deploy"
 MAVEN_TEST_SKIP=true
 
-while getopts "sd" option; do
+COMMAND=$1; shift
+
+while getopts "td" option; do
     case "${option}" in
-    s) MAVEN_TEST_SKIP=false;;
+    t) MAVEN_TEST_SKIP=false;;
     d) SAKAI_DEPLOY="";;
     *) echo "Incorrect options provided"; exit 1;;
     esac
 done
 
 #TODO Add some of these options (deploy, test skip, etc) as options
-if [ "$1" = "tomcat" ]; then
-	start_tomcat
-elif [ "$1" = "mysql" ]; then
-	start_mysql	
-elif [ "$1" = "build" ]; then
-	SAKAI_DEPLOY="sakai:deploy"
-	maven_build	
-elif [ "$1" = "clean_deploy" ]; then
-	clean_deploy	
-elif [ "$1" = "clean_mysql" ]; then
-	clean_mysql
-elif [ "$1" = "kill" ]; then
-	kill_all
-else
-	echo "
-	Must specify one of:
-	mysql (Starts MySQL)
-	tomcat (Starts tomcat)
-	build (Build and deploy sakai tool to tomcat)
-		Add options: 
-		-s (Don't skip tests)
-		-d (Don't deploy to tomcat)
-	kill (Stop all instances) 
-	clean_deploy (Clean the deploy directory)
-	clean_mysql (Clean the mysql directory"
-	exit
-fi
+case "$COMMAND" in
+    tomcat)
+	    start_tomcat;;
+    mysql)
+    	start_mysql;;
+    build)
+    	maven_build;;
+    clean_deploy)
+    	clean_deploy;;
+    clean_mysql)
+    	clean_mysql;;
+    kill)
+    	kill_all;;
+    *)  
+        echo "
+        Usage $0
+        mysql (Starts MySQL)
+        tomcat (Starts tomcat)
+        build (Build and deploy sakai tool to tomcat)
+            By Default tests are skipped AND the artifacts are deployed
+        kill (Stop all instances) 
+        clean_deploy (Clean the deploy directory)
+        clean_mysql (Clean the mysql directory
+            ** Add options after (just currently for build) 
+            -t (Don't skip tests)
+            -d (Don't deploy to tomcat)"
+        exit 1
+esac	
