@@ -130,11 +130,11 @@ case "$COMMAND" in
         tomcat (Starts tomcat)
         build (Build and deploy sakai tool to tomcat)
             By Default tests are skipped AND the artifacts are deployed
-        kill (Stop all instances) 
-        clean_deploy (Clean the deploy directory)
-        clean_mysql (Clean the mysql directory
             ** Add options after (just currently for build) 
             -t (Don't skip tests)
-            -d (Don't deploy to tomcat)"
+            -d (Don't deploy to tomcat)
+        kill (Stop all instances) 
+        clean_deploy (Clean the deploy directory)
+        clean_mysql (Clean the mysql directory"
         exit 1
 esac	
