@@ -53,5 +53,13 @@ Remove it if you already made one and want to clean it out!
 * To write the logs to a file use
 `docker logs sakai-tomcat >& logs.txt`
 
+# Custom Maven
+You may need to buidl a custom Maven to get this to work from time to time. I've got a maven that includes git for instance.
+
+`cd mavenbuild`
+`docker build . -t sakai:build`
+
+Then if you build with it -c option it will use this custom build instead of a default one.
+
 # References
 * https://askubuntu.com/a/604111/365150

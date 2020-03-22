@@ -21,6 +21,9 @@ TOMCAT="${WORK}/tomcat"
 # Where files will be deployed
 DEPLOY="${TOMCAT}/deploy"
 
+# Which maven image to use
+MAVEN_IMAGE="maven:3.6.1-jdk-8-slim"
+
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
 start_tomcat() {
@@ -75,8 +78,8 @@ maven_build() {
 	    -v "${WORK}/.cache:/.cache" \
 	    -v "${PWD}:/usr/src/app" \
 	    -u `id -u`:`id -g` \
-	    -w /usr/src/app maven:3.6.1-jdk-8-slim \
-	    /bin/bash -c "mvn -T ${THREADS} -B -P mysql clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
+	    -w /usr/src/app ${MAVEN_IMAGE} \
+	    /bin/bash -c "mvn -T ${THREADS} -B ${UPDATES} -P mysql clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Djava.awt.headless=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
 }
 
 clean_deploy() {
@@ -101,10 +104,12 @@ MAVEN_TEST_SKIP=true
 
 COMMAND=$1; shift
 
-while getopts "td" option; do
+while getopts "tdUc" option; do
     case "${option}" in
     t) MAVEN_TEST_SKIP=false;;
     d) SAKAI_DEPLOY="";;
+    U) UPDATES="-U";;
+    c) MAVEN_IMAGE="sakai:build";;
     *) echo "Incorrect options provided"; exit 1;;
     esac
 done
@@ -133,6 +138,8 @@ case "$COMMAND" in
             ** Add options after (just currently for build) 
             -t (Don't skip tests)
             -d (Don't deploy to tomcat)
+	    -U (Force updates)
+	    -c (Use custom maven image)
         kill (Stop all instances) 
         clean_deploy (Clean the deploy directory)
         clean_mysql (Clean the mysql directory"
