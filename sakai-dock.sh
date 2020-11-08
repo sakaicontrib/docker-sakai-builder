@@ -22,7 +22,7 @@ TOMCAT="${WORK}/tomcat"
 DEPLOY="${TOMCAT}/deploy"
 
 # Which maven image to use
-MAVEN_IMAGE="maven:3.6.1-jdk-8-slim"
+MAVEN_IMAGE="maven:3.6.3-jdk-8-slim"
 
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
@@ -56,6 +56,18 @@ start_mysql() {
 	    -v "${WORK}/mysql/data:/var/lib/mysql" \
 	    -u `id -u`:`id -g` \
 	    -d mysql:5.7 || docker start sakai-mysql
+}
+
+# This is mostly for debugging maven/tomcat
+start_bash() {
+	docker run --rm -it \
+	    -v "${DEPLOY}:/usr/src/deploy" \
+	    -v "${WORK}/.m2:/tmp/.m2" \
+	    -v "${WORK}/.npm:/.npm" \
+	    -v "${WORK}/.config:/.config" \
+	    -v "${WORK}/.cache:/.cache" \
+	    -v "${PWD}:/usr/src/app" \
+	    bash:4.4
 }
 
 maven_build() {
@@ -126,6 +138,8 @@ case "$COMMAND" in
     	clean_deploy;;
     clean_mysql)
     	clean_mysql;;
+    bash)
+	start_bash;;
     kill)
     	kill_all;;
     *)  
@@ -142,6 +156,7 @@ case "$COMMAND" in
 	    -c (Use custom maven image)
         kill (Stop all instances) 
         clean_deploy (Clean the deploy directory)
-        clean_mysql (Clean the mysql directory"
+        clean_mysql (Clean the mysql directory
+        bash (Starts a debugging shell"
         exit 1
 esac	
