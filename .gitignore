@@ -1,8 +1,11 @@
 sakai
 work/tomcat/deploy/
+work/tomcat/sakaihome/ignite
+.npm
 work/Catalina
 work/mysql/data
 work/tomcat/deploy/logs/
 work/.config
 work/.m2
 *.swp
+*.swo
