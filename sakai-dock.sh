@@ -81,6 +81,9 @@ maven_build() {
 	mkdir -p "$WORK/.config"
 	mkdir -p "$WORK/.cache"
 
+	# Copy the p6spy files into the lib directory
+	cp p6spy/p6spy-3.9.1.jar spy.properties ${DEPLOY}/lib
+
 	# Now build the code
 	docker run --rm -it --name sakai-build \
 	    -e "MAVEN_OPTS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
