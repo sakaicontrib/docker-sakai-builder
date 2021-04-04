@@ -75,7 +75,7 @@ start_bash() {
 maven_build() {
 	# If docker creates this directory it does it as the wrong user, so create it first
 	# These are on the host so they can be re-used between builds
-	mkdir -p "$DEPLOY"
+	mkdir -p "$DEPLOY/lib"
 	mkdir -p "$WORK/.m2"
 	mkdir -p "$WORK/.npm"
 	mkdir -p "$WORK/.config"
