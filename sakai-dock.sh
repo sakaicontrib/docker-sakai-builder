@@ -24,7 +24,7 @@ DEPLOY="${TOMCAT}/deploy"
 SAKAIHOME="${TOMCAT}/sakaihome"
 
 # Which maven image to use
-MAVEN_IMAGE="maven:3.6.3-jdk-8-slim"
+MAVEN_IMAGE="markhobson/maven-chrome:jdk-8"
 
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
@@ -95,6 +95,7 @@ maven_build() {
 	    -v "${WORK}/.cache:/.cache" \
 	    -v "${PWD}:/usr/src/app" \
 	    -u `id -u`:`id -g` \
+		--cap-add=SYS_ADMIN \
 	    -w /usr/src/app ${MAVEN_IMAGE} \
 	    /bin/bash -c "mvn -T ${THREADS} -B ${UPDATES} -P mysql clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Djava.awt.headless=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
 }
