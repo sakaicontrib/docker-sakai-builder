@@ -2,7 +2,7 @@
 # Script to build, deploy and run Sakai in docker containers
 # TODO Provide option for cleaning up these instances
 
-# Set up some options, TODO make these configurable
+# Set up some options, TODO make these configurable (pull from the environment if it's set)
 
 # Whether or not to set wicket debug mode on
 # This should either be development or deployment
@@ -26,15 +26,17 @@ SAKAIHOME="${TOMCAT}/sakaihome"
 # Which maven image to use
 MAVEN_IMAGE="markhobson/maven-chrome:jdk-8"
 
+TIMEZONE="US/Pacific"
+
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
 start_tomcat() {
 	docker stop sakai-tomcat && docker rm sakai-tomcat
 	docker run -d --name=sakai-tomcat \
-	    -p 8080:8080 -p 8089:8089 -p 8000:8000 \
+	    -p 8080:8080 -p 8089:8089 -p 8000:8000 -p 8025:8025 \
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "CATALINA_TMPDIR=/tmp" \
-	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=US/Eastern -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG}" \
+	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG}" \
 	    -e "JPDA_ADDRESS=8000" \
 	    -v "${DEPLOY}:/usr/src/app/deploy" \
 	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai" \
