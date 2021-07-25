@@ -54,7 +54,7 @@ Remove it if you already made one and want to clean it out!
 `docker logs sakai-tomcat >& logs.txt`
 
 # Custom Maven
-You may need to buidl a custom Maven to get this to work from time to time. I've got a maven that includes git for instance.
+You may need to build a custom Maven to get this to work from time to time. I've got a maven that includes git for instance.
 
 `cd mavenbuild`
 `docker build . -t sakai:build`
