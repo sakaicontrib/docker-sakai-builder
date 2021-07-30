@@ -39,16 +39,20 @@ cd sakai
 cd ..
 ```
 
-# Start up MySQL on port 53306
-Remove it if you already made one and want to clean it out! (Optional)
-`# \rm -rf ${WORK}/mysql/data`
-Start up MySQL!
-`./sakai-dock.sh mysql`
+Start up MySQL on port 53306.
+Remove MySQL data if you already made one and want to clean it out! (Optional)
+
+```
+# \rm -rf ${WORK}/mysql/data
+# ./sakai-dock.sh mysql
 
 # Now startup tomcat!
-Remove it if you already made one and want to clean it out!
-`# docker rm sakai-tomcat`
-`./sakai-dock.sh tomcat`
+```
+# Remove it if you already made one and want to clean it out!
+```
+# docker rm sakai-tomcat
+./sakai-dock.sh tomcat
+```
 
 * To see the startup logs run 
 `docker logs sakai-tomcat -f`
