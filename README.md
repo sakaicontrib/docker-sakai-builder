@@ -45,18 +45,23 @@ Remove MySQL data if you already made one and want to clean it out! (Optional)
 ```
 # \rm -rf ${WORK}/mysql/data
 # ./sakai-dock.sh mysql
+```
+
+You can connect to mysql to look around using a password of `sakairoot`:
+```
+mysql -h 127.0.0.1 -P 53306 -u root -p
+```
 
 # Now startup tomcat!
 ```
-# Remove it if you already made one and want to clean it out!
-```
+# Remove if you already made a sakai-tomcat docker image and you want to a fresh one!
 # docker rm sakai-tomcat
 ./sakai-dock.sh tomcat
 ```
 
-* To see the startup logs run 
+* To watch the sakai logs as it runs run 
 `docker logs sakai-tomcat -f`
-* To write the logs to a file use
+* To get a complete log and write it to a file use
 `docker logs sakai-tomcat >& logs.txt`
 
 # Custom Maven
