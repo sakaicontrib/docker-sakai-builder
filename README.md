@@ -16,13 +16,14 @@ TODO:
   * If using WSL make sure to put your files on the /mnt/c (or /c) drive somewhere or else (Windows) Docker won't be able to use them.
 * Git installed for your OS so that the "git" command works on the command line.
 
-To clean up everything done here run
-`Docker stop sakai-mysql; docker stop sakai-tomcat; docker rm sakai-mysql; docker rm sakai-tomcat; docker rm sakai-build; git clean -f -d`
-
+If you already have this checked out and want to start fresh in this folder, run
 ```
-# First download Sakai with git in this directory, you may also want to clone your fork instead.
+docker stop sakai-mysql; docker stop sakai-tomcat; docker rm sakai-mysql; docker rm sakai-tomcat; docker rm sakai-build; git clean -f -d
+```
+Make sure you have a copy of Sakai in the `sakai` folder:
+```
+# You may also want to clone your fork/repo instead of the sakaiproject repo
 git clone https://github.com/sakaiproject/sakai
-cd sakai
 ```
 
 *Note at this point you can checkout and build another branch. These notes will only currently work with 19.x+ because of the tomcat version.*
@@ -33,6 +34,7 @@ Note: (This caches the artifacts at ~/.m2 deploys to /tomcat/deploy)
 ```
 # May need to run this to clean up the deploy, run this if the case
 # ../sakai-dock.sh clean_deploy
+cd sakai
 ../sakai-dock.sh build
 cd ..
 ```
