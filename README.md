@@ -33,21 +33,21 @@ Note: (This caches the artifacts at ~/.m2 deploys to /tomcat/deploy)
 
 ```
 # May need to run this to clean up the deploy, run this if the case
-# ../sakai-dock.sh clean_deploy
+../sakai-dock.sh clean_deploy
 cd sakai
 ../sakai-dock.sh build
 cd ..
 ```
 
-Start up MySQL on port 53306.
-Remove MySQL data if you already made one and want to clean it out! (Optional)
+Start up MariaDB on port 53306.
+Remove database data if you already made one and want to clean it out! (Optional)
 
 ```
-# \rm -rf ${WORK}/mysql/data
-# ./sakai-dock.sh mysql
+./sakai-dock.sh clean_data
+./sakai-dock.sh mariadb
 ```
 
-You can connect to mysql to look around using a password of `sakairoot`:
+You can connect to mariadb to look around using a password of `sakairoot`:
 ```
 mysql -h 127.0.0.1 -P 53306 -u root -p
 ```

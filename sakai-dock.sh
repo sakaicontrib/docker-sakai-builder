@@ -44,22 +44,22 @@ start_tomcat() {
 	    -v "${TOMCAT}/catalina_base/conf:/usr/src/app/deploy/conf:cached" \
 	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT:cached" \
 	    -u `id -u`:`id -g` \
-	    --link sakai-mysql:mysql \
+	    --link sakai-mariadb \
 	    tomcat:9-jdk8 \
 	    /usr/local/tomcat/bin/catalina.sh jpda run || docker start sakai-tomcat
 }
 
-start_mysql() {
+start_mariadb() {
 	mkdir -p "${WORK}/mysql/data"
-	docker stop sakai-mysql
-	# May want to include an opt for docker rm sakai-mysql
+	docker stop sakai-mariadb
+	# May want to include an opt for docker rm sakai-mariadb
 	# Start it if we've already created it, unless we want to re-create
-	docker run -d --name=sakai-mysql --pull always -p 53306:3306 \
-	    -e "MYSQL_ROOT_PASSWORD=sakairoot" \
+	docker run -p 127.0.0.1:53306:3306 -d --name=sakai-mariadb --pull always \
+	    -e "MARIADB_ROOT_PASSWORD=sakairoot" \
 	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d:delegated" \
 	    -v "${WORK}/mysql/data:/var/lib/mysql:delegated" \
 	    -u `id -u`:`id -g` \
-	    -d mysql:5.7 || docker start sakai-mysql
+	    -d mariadb:10 || docker start sakai-mariadb
 }
 
 # This is mostly for debugging maven/tomcat
@@ -104,17 +104,17 @@ maven_build() {
 
 clean_deploy() {
 	rm -rf $DEPLOY
+}
+
+clean_data() {
+	rm -rf ${WORK}/mysql/data
 	rm -rf ${SAKAIHOME}/samigo
 	rm -rf ${SAKAIHOME}/ignite
 }
 
-clean_mysql() {
-	rm -rf ${WORK}/mysql/data
-}
-
 kill_all() {
-	docker kill sakai-tomcat sakai-mysql
-	docker rm sakai-tomcat sakai-mysql
+	docker kill sakai-tomcat sakai-mariadb
+	docker rm sakai-tomcat sakai-mariadb
 }
 
 # Turn off command echo
@@ -141,13 +141,15 @@ case "$COMMAND" in
     tomcat)
 	    start_tomcat;;
     mysql)
-    	start_mysql;;
+    	start_mariadb;;
+    mariadb)
+        start_mariadb;;
     build)
     	maven_build;;
     clean_deploy)
     	clean_deploy;;
-    clean_mysql)
-    	clean_mysql;;
+    clean_data)
+    	clean_data;;
     bash)
 	start_bash;;
     kill)
@@ -155,7 +157,7 @@ case "$COMMAND" in
     *)  
         echo "
         Usage $0
-        mysql (Starts MySQL)
+        mysql or mariadb (Starts MariaDB)
         tomcat (Starts tomcat)
         build (Build and deploy sakai tool to tomcat)
             By Default tests are skipped AND the artifacts are deployed
@@ -166,7 +168,7 @@ case "$COMMAND" in
 	    -c (Use custom maven image)
         kill (Stop all instances) 
         clean_deploy (Clean the deploy directory)
-        clean_mysql (Clean the mysql directory
+        clean_data (Clean the database directory)
         bash (Starts a debugging shell"
         exit 1
 esac	
