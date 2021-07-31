@@ -64,11 +64,23 @@ mysql -h 127.0.0.1 -P 53306 -u root -p
 * To get a complete log and write it to a file use
 `docker logs sakai-tomcat >& logs.txt`
 
+# Partial builds - Run from a subfolder
+```
+cd sakai/basiclti
+../../sakai-dock.sh build
+```
+
+Sometimes it works but sometimes you also have to restart tomcat afer a build:
+```
+../../sakai-dock.sh tomcat
+```
+
 # Custom Maven
 You may need to build a custom Maven to get this to work from time to time. I've got a maven that includes git for instance.
-
-`cd mavenbuild`
-`docker build . -t sakai:build`
+```
+cd mavenbuild
+docker build . -t sakai:build
+```
 
 Then if you build with it -c option it will use this custom build instead of a default one.
 
