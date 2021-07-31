@@ -32,17 +32,22 @@ echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
 start_tomcat() {
 	docker stop sakai-tomcat && docker rm sakai-tomcat
+<<<<<<< HEAD
 	docker run -d --name=sakai-tomcat \
 	    -p 8080:8080 -p 8089:8089 -p 8000:8000 -p 8025:8025 \
+=======
+	docker run -d --name=sakai-tomcat --pull always \
+	    -p 8080:8080 -p 8089:8089 -p 8000:8000 \
+>>>>>>> e09c9cf (Switching to always pull and adding :delegated :cached for older Docker)
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "CATALINA_TMPDIR=/tmp" \
 	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG}" \
 	    -e "JPDA_ADDRESS=8000" \
-	    -v "${DEPLOY}:/usr/src/app/deploy" \
-	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai" \
-	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin" \
-	    -v "${TOMCAT}/catalina_base/conf:/usr/src/app/deploy/conf" \
-	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
+	    -v "${DEPLOY}:/usr/src/app/deploy:cached" \
+	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai:cached" \
+	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin:cached" \
+	    -v "${TOMCAT}/catalina_base/conf:/usr/src/app/deploy/conf:cached" \
+	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT:cached" \
 	    -u `id -u`:`id -g` \
 	    --link sakai-mysql:mysql \
 	    tomcat:9-jdk8 \
@@ -54,10 +59,10 @@ start_mysql() {
 	docker stop sakai-mysql
 	# May want to include an opt for docker rm sakai-mysql
 	# Start it if we've already created it, unless we want to re-create
-	docker run -d --name=sakai-mysql -p 53306:3306 \
+	docker run -d --name=sakai-mysql --pull always -p 53306:3306 \
 	    -e "MYSQL_ROOT_PASSWORD=sakairoot" \
-	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d" \
-	    -v "${WORK}/mysql/data:/var/lib/mysql" \
+	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d:delegated" \
+	    -v "${WORK}/mysql/data:/var/lib/mysql:delegated" \
 	    -u `id -u`:`id -g` \
 	    -d mysql:5.7 || docker start sakai-mysql
 }
@@ -87,15 +92,15 @@ maven_build() {
 	cp ${BASEDIR}/p6spy/p6spy-3.9.1.jar ${BASEDIR}/p6spy/spy.properties ${DEPLOY}/lib
 
 	# Now build the code
-	docker run --rm -it --name sakai-build \
+	docker run --rm -it --pull always --name sakai-build \
 	    -e "MAVEN_OPTS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
 	    -e "MAVEN_CONFIG=/tmp/.m2" \
-	    -v "${DEPLOY}:/usr/src/deploy" \
-	    -v "${WORK}/.m2:/tmp/.m2" \
-	    -v "${WORK}/.npm:/.npm" \
-	    -v "${WORK}/.config:/.config" \
-	    -v "${WORK}/.cache:/.cache" \
-	    -v "${PWD}:/usr/src/app" \
+	    -v "${DEPLOY}:/usr/src/deploy:delegated" \
+	    -v "${WORK}/.m2:/tmp/.m2:delegated" \
+	    -v "${WORK}/.npm:/.npm:delegated" \
+	    -v "${WORK}/.config:/.config:delegated" \
+	    -v "${WORK}/.cache:/.cache:delegated" \
+	    -v "${PWD}:/usr/src/app:cached" \
 	    -u `id -u`:`id -g` \
 		--cap-add=SYS_ADMIN \
 	    -w /usr/src/app ${MAVEN_IMAGE} \
