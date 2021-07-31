@@ -32,13 +32,8 @@ echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
 start_tomcat() {
 	docker stop sakai-tomcat && docker rm sakai-tomcat
-<<<<<<< HEAD
-	docker run -d --name=sakai-tomcat \
-	    -p 8080:8080 -p 8089:8089 -p 8000:8000 -p 8025:8025 \
-=======
 	docker run -d --name=sakai-tomcat --pull always \
-	    -p 8080:8080 -p 8089:8089 -p 8000:8000 \
->>>>>>> e09c9cf (Switching to always pull and adding :delegated :cached for older Docker)
+	    -p 8080:8080 -p 8089:8089 -p 8000:8000 -p 8025:8025 \
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "CATALINA_TMPDIR=/tmp" \
 	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG}" \
