@@ -99,7 +99,7 @@ maven_build() {
 	    -u `id -u`:`id -g` \
 		--cap-add=SYS_ADMIN \
 	    -w /usr/src/app ${MAVEN_IMAGE} \
-	    /bin/bash -c "mvn -T ${THREADS} -B ${UPDATES} -P mysql clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Djava.awt.headless=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
+	    /bin/bash -c "mvn -T ${THREADS} -B ${UPDATES} clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Djava.awt.headless=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
 }
 
 clean_deploy() {
