@@ -32,9 +32,9 @@ git clone https://github.com/sakaiproject/sakai
 Note: (This caches the artifacts at ~/.m2 deploys to /tomcat/deploy)
 
 ```
-# May need to run this to clean up the deploy, run this if the case
-../sakai-dock.sh clean_deploy
+# May need to run this to clean up the deploy, run clean_deploy if the case
 cd sakai
+../sakai-dock.sh clean_deploy
 ../sakai-dock.sh build
 cd ..
 ```
@@ -47,7 +47,8 @@ Remove database data if you already made one and want to clean it out! (Optional
 ./sakai-dock.sh mariadb
 ```
 
-You can connect to mariadb to look around using a password of `sakairoot`:
+You can connect to mariadb to look around using a password of `sakairoot`.  It takes a moment for
+mariadb to come up so you might want to make sure this connection works before starting tomcat.
 ```
 mysql -h 127.0.0.1 -P 53306 -u root -p
 ```
