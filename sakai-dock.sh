@@ -50,7 +50,7 @@ start_tomcat() {
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "CATALINA_TMPDIR=/tmp" \
 	    -e "JAVA_OPTS=-server -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG} ${JDK11_OPTS} ${JDK11_GC}" \
-	    -e "JPDA_ADDRESS=8000" \
+	    -e "JPDA_ADDRESS=*:8000" \
 	    -v "${DEPLOY}:/usr/src/app/deploy:cached" \
 	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai:cached" \
 	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin:cached" \
