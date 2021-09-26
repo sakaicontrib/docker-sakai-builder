@@ -24,11 +24,17 @@ DEPLOY="${TOMCAT}/deploy"
 SAKAIHOME="${TOMCAT}/sakaihome"
 
 # Which maven image to use
-MAVEN_IMAGE="markhobson/maven-chrome:jdk-8"
+MAVEN_IMAGE="markhobson/maven-chrome:jdk-11"
 
 TIMEZONE="US/Pacific"
 
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
+
+# Opts from SAK-33595 indicated for JDK11
+JDK11_OPTS="--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED --add-exports=jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED --add-exports=java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --illegal-access=permit"
+
+# This may be reconfigured
+JDK11_GC="-Xlog:gc"
 
 start_tomcat() {
 	docker stop sakai-tomcat && docker rm sakai-tomcat
@@ -36,7 +42,7 @@ start_tomcat() {
 	    -p 8080:8080 -p 8089:8089 -p 8000:8000 -p 8025:8025 \
 	    -e "CATALINA_BASE=/usr/src/app/deploy" \
 	    -e "CATALINA_TMPDIR=/tmp" \
-	    -e "JAVA_OPTS=-server -d64 -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG}" \
+	    -e "JAVA_OPTS=-server -Xms1g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG} ${JDK11_OPTS} ${JDK11_GC}" \
 	    -e "JPDA_ADDRESS=8000" \
 	    -v "${DEPLOY}:/usr/src/app/deploy:cached" \
 	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai:cached" \
@@ -45,7 +51,7 @@ start_tomcat() {
 	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT:cached" \
 	    -u `id -u`:`id -g` \
 	    --link sakai-mariadb \
-	    tomcat:9-jdk8 \
+	    tomcat:9-jdk11-openjdk-slim \
 	    /usr/local/tomcat/bin/catalina.sh jpda run || docker start sakai-tomcat
 }
 
