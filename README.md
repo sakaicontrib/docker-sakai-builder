@@ -18,7 +18,7 @@ TODO:
 
 If you already have this checked out and want to start fresh in this folder, run
 ```
-docker stop sakai-mysql; docker stop sakai-tomcat; docker rm sakai-mysql; docker rm sakai-tomcat; docker rm sakai-build; git clean -f -d
+docker stop sakai-mariadb; docker stop sakai-tomcat; docker rm sakai-mariadb; docker rm sakai-tomcat; docker rm sakai-build; git clean -f -d
 ```
 Make sure you have a copy of Sakai in the `sakai` folder:
 ```
