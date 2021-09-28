@@ -26,7 +26,8 @@ SAKAIHOME="${TOMCAT}/sakaihome"
 # Which maven image to use
 MAVEN_IMAGE="markhobson/maven-chrome:jdk-11"
 
-TIMEZONE="US/Pacific"
+# This defaults to detroit timezone. Make this configurable
+TIMEZONE="America/Detroit"
 
 echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 
