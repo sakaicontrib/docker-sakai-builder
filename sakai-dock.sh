@@ -79,7 +79,7 @@ start_mariadb() {
 	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d:delegated" \
 	    -v "${WORK}/mysql/data:/var/lib/mysql:delegated" \
 	    -u `id -u`:`id -g` \
-	    -d mariadb:10 || docker start ${CONTAINER_NAME}
+	    -d mariadb:10 --lower-case-table-names=1 || docker start ${CONTAINER_NAME}
 }
 
 # This is mostly for debugging maven/tomcat
