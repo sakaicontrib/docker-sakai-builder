@@ -47,8 +47,8 @@ Remove database data if you already made one and want to clean it out! (Optional
 ./sakai-dock.sh mariadb
 ```
 
-You can connect to mariadb to look around using a password of `sakairoot`.  It takes a moment for
-mariadb to come up so you might want to make sure this connection works before starting tomcat.
+You can connect to mariadb to look around using a password of `sakairoot`.  It takes up to 60 seconds for
+mariadb to fully come up so you might want to make sure this connection works before starting tomcat after starting mariadb.
 ```
 mysql -h 127.0.0.1 -P 53306 -u root -p
 ```
