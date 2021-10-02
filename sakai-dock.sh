@@ -59,7 +59,7 @@ start_tomcat() {
 	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT:cached" \
 	    -u `id -u`:`id -g` \
 	    --link sakai-mariadb \
-	    tomcat:9-jdk11-openjdk-slim \
+	    tomcat:9-jdk11-openjdk \
 	    /usr/local/tomcat/bin/catalina.sh jpda run || docker start ${CONTAINER_NAME}
 }
 
