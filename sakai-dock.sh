@@ -23,8 +23,10 @@ DEPLOY="${TOMCAT}/deploy"
 # Sakai home filse
 SAKAIHOME="${TOMCAT}/sakaihome"
 
-# Which maven image to use
+# Which maven container to use
 MAVEN_IMAGE="markhobson/maven-chrome:jdk-11"
+
+PROXY_IMAGE="esplo/docker-local-ssl-termination-proxy"
 
 # This defaults to detroit timezone. Make this configurable
 TIMEZONE="America/Detroit"
@@ -47,11 +49,13 @@ container_check_and_rm() {
     fi
 }
 
-start_tomcat() {
+start_proxy() {
     # Startup the https proxy first
     container_check_and_rm "docker-local-ssl-termination-proxy"
-    docker run -d -e "HOST_IP=127.0.0.1" -e "PORT=8080" -p 443:443 --name="docker-local-ssl-termination-proxy" --rm esplo/docker-local-ssl-termination-proxy
-    
+    docker run -d -e "HOST_IP=127.0.0.1" -e "PORT=8080" -p 443:443 --name="docker-local-ssl-termination-proxy" --rm ${PROXY_IMAGE}
+}
+
+start_tomcat() {
     container_check_and_rm "sakai-tomcat"
 	docker run -d --name="sakai-tomcat" --pull always \
 	    -p 8080:8080 -p 8089:8089 -p 8000:8000 -p 8025:8025 \
@@ -162,6 +166,8 @@ done
 case "$COMMAND" in
     tomcat)
 	    start_tomcat;;
+    proxy)
+        start_proxy;;
     mysql)
     	start_mariadb;;
     mariadb)
@@ -177,20 +183,20 @@ case "$COMMAND" in
     kill)
     	kill_all;;
     *)  
-        echo "
-        Usage $0
-        mysql or mariadb (Starts MariaDB)
-        tomcat (Starts tomcat)
-        build (Build and deploy sakai tool to tomcat)
-            By Default tests are skipped AND the artifacts are deployed
-            ** Add options after (just currently for build) 
-            -t (Don't skip tests)
-            -d (Don't deploy to tomcat)
-	    -U (Force updates)
-	    -c (Use custom maven image)
-        kill (Stop all instances) 
-        clean_deploy (Clean the deploy directory)
-        clean_data (Clean the database directory)
-        bash (Starts a debugging shell"
-        exit 1
+echo "Usage $0
+    - mysql or mariadb (Starts MariaDB)
+    - tomcat (Starts tomcat)
+    - proxy (Starts a 443 proxy to test proxy related things). Need to set force.url.secure=443 in work/tomcat/sakaihome/sakai.properties.
+    - build (Build and deploy sakai tool to tomcat)
+        By Default tests are skipped AND the artifacts are deployed
+        ** Add options after (just currently for build) 
+        -t (Don't skip tests)
+        -d (Don't deploy to tomcat)
+        -U (Force updates)
+        -c (Use custom maven image)
+    - kill (Stop all instances) 
+    - clean_deploy (Clean the deploy directory)
+    - clean_data (Clean the database directory)
+    - bash (Starts a debugging shell"
+exit 1
 esac	
