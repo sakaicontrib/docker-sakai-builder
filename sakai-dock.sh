@@ -36,7 +36,7 @@ echo "WORK:$WORK TOMCAT:$TOMCAT DEPLOY:$DEPLOY WICKET_CONFIG:$WICKET_CONFIG"
 # Opts from SAK-33595 indicated for JDK11
 JDK11_OPTS="--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED --add-exports=jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED --add-exports=java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --illegal-access=permit"
 
-# This may be reconfigured
+# This may be reconfigured or removed
 JDK11_GC="-Xlog:gc -XX:+UseShenandoahGC -XX:+AlwaysPreTouch"
 
 container_check_and_rm() {
@@ -63,11 +63,11 @@ start_tomcat() {
 	    -e "CATALINA_TMPDIR=/tmp" \
 	    -e "JAVA_OPTS=-server -Xms2g -Xmx2g -Djava.awt.headless=true -XX:+UseCompressedOops -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false” -Dsakai.home=/usr/src/app/deploy/sakai/ -Duser.timezone=${TIMEZONE} -Dsakai.cookieName=SAKAI2SESSIONID -Dsakai.demo=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dwicket.configuration=${WICKET_CONFIG} ${JDK11_OPTS} ${JDK11_GC}" \
 	    -e "JPDA_ADDRESS=*:8000" \
-	    -v "${DEPLOY}:/usr/src/app/deploy:cached" \
-	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai:cached" \
-	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin:cached" \
-	    -v "${TOMCAT}/catalina_base/conf:/usr/src/app/deploy/conf:cached" \
-	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT:cached" \
+	    -v "${DEPLOY}:/usr/src/app/deploy" \
+	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai" \
+	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin" \
+	    -v "${TOMCAT}/catalina_base/conf:/usr/src/app/deploy/conf" \
+	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
 	    -u `id -u`:`id -g` \
 	    --link sakai-mariadb \
 	    tomcat:9-jdk11-temurin \
@@ -82,8 +82,8 @@ start_mariadb() {
 	# Start it if we've already created it, unless we want to re-create
 	docker run -p 127.0.0.1:53306:3306 -d --name="sakai-mariadb" --pull always \
 	    -e "MARIADB_ROOT_PASSWORD=sakairoot" \
-	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d:delegated" \
-	    -v "${WORK}/mysql/data:/var/lib/mysql:delegated" \
+	    -v "${WORK}/mysql/scripts:/docker-entrypoint-initdb.d" \
+	    -v "${WORK}/mysql/data:/var/lib/mysql" \
 	    -u `id -u`:`id -g` \
 	    -d mariadb:10 --lower-case-table-names=1 || docker start "sakai-mariadb"
 }
@@ -116,12 +116,12 @@ maven_build() {
 	docker run --rm -it --pull always --name sakai-build \
 	    -e "MAVEN_OPTS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
 	    -e "MAVEN_CONFIG=/tmp/.m2" \
-	    -v "${DEPLOY}:/usr/src/deploy:delegated" \
-	    -v "${WORK}/.m2:/tmp/.m2:delegated" \
-	    -v "${WORK}/.npm:/.npm:delegated" \
-	    -v "${WORK}/.config:/.config:delegated" \
-	    -v "${WORK}/.cache:/.cache:delegated" \
-	    -v "${PWD}:/usr/src/app:cached" \
+	    -v "${DEPLOY}:/usr/src/deploy" \
+	    -v "${WORK}/.m2:/tmp/.m2" \
+	    -v "${WORK}/.npm:/.npm" \
+	    -v "${WORK}/.config:/.config" \
+	    -v "${WORK}/.cache:/.cache" \
+	    -v "${PWD}:/usr/src/app" \
 	    -u `id -u`:`id -g` \
 		--cap-add=SYS_ADMIN \
 	    -w /usr/src/app ${MAVEN_IMAGE} \
