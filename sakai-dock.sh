@@ -9,7 +9,7 @@
 WICKET_CONFIG="development"
 
 # Number of threads, might need to change this for debuggging
-THREADS=C1
+THREADS=1C
 
 cd $(dirname "${0}") > /dev/null
 BASEDIR=$(pwd -L)
