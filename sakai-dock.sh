@@ -26,6 +26,9 @@ SAKAIHOME="${TOMCAT}/sakaihome"
 # Which maven container to use
 MAVEN_IMAGE="markhobson/maven-chrome:jdk-11"
 
+# Any extra options to pass to maven
+MVN_EXTRA_OPTS="-Dmaven.plugin.validation=DEFAULT"
+
 PROXY_IMAGE="esplo/docker-local-ssl-termination-proxy"
 
 # This defaults to detroit timezone. Make this configurable
@@ -113,7 +116,7 @@ maven_build() {
 	cp ${BASEDIR}/p6spy/p6spy-3.9.1.jar ${BASEDIR}/p6spy/spy.properties ${DEPLOY}/lib
 
 	# Now build the code
-	docker run --rm -it --pull always --name sakai-build \
+	docker run --rm -it --name sakai-build \
 	    -e "MAVEN_OPTS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
 	    -e "MAVEN_CONFIG=/tmp/.m2" \
 	    -v "${DEPLOY}:/usr/src/deploy" \
@@ -125,7 +128,7 @@ maven_build() {
 	    -u `id -u`:`id -g` \
 		--cap-add=SYS_ADMIN \
 	    -w /usr/src/app ${MAVEN_IMAGE} \
-	    /bin/bash -c "mvn -T ${THREADS} -B ${UPDATES} clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Djava.awt.headless=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/"
+	    /bin/bash -c "mvn -T ${THREADS} -B ${UPDATES} clean install ${SAKAI_DEPLOY} -Dmaven.test.skip=${MAVEN_TEST_SKIP} -Djava.awt.headless=true -Dmaven.tomcat.home=/usr/src/deploy -Dsakai.cleanup=true -Duser.home=/tmp/ ${MVN_EXTRA_OPTS}"
 }
 
 clean_deploy() {
@@ -147,7 +150,7 @@ kill_all() {
 set +x
 
 # Defaults
-SAKAI_DEPLOY="sakai:deploy"
+SAKAI_DEPLOY="sakai:deploy-exploded"
 MAVEN_TEST_SKIP=true
 
 COMMAND=$1; shift
