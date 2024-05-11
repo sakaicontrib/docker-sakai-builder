@@ -68,9 +68,9 @@ start_tomcat() {
 	    -e "JPDA_ADDRESS=*:8000" \
 	    -v "${DEPLOY}:/usr/src/app/deploy" \
 	    -v "${SAKAIHOME}:/usr/src/app/deploy/sakai" \
-	    -v "${TOMCAT}/catalina_base/bin:/usr/src/app/deploy/bin" \
-	    -v "${TOMCAT}/catalina_base/conf:/usr/src/app/deploy/conf" \
-	    -v "${TOMCAT}/catalina_base/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
+	    -v "${TOMCAT}/catalina_home/bin:/usr/src/app/deploy/bin" \
+	    -v "${TOMCAT}/catalina_home/conf:/usr/src/app/deploy/conf" \
+	    -v "${TOMCAT}/deploy/webapps/ROOT:/usr/src/app/deploy/webapps/ROOT" \
 	    -u `id -u`:`id -g` \
 	    --link sakai-mariadb \
 	    tomcat:9-jdk11-temurin \
